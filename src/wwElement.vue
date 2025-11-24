@@ -7,21 +7,39 @@ class="multi-select-input"
 :class="{ 'is-disabled': content.disabled }"
 >
 <div class="selected-options" @click.stop="openDropdown">
-<div 
-v-for="(option, index) in selectedOptions" 
-:key="index" 
+<!-- Compact summary mode -->
+<div v-if="shouldShowCompact" class="compact-summary">
+<span class="summary-text">{{ compactSummaryText }}</span>
+</div>
+
+<!-- Tags mode -->
+<template v-else>
+<div
+v-for="(option, index) in visibleTags"
+:key="index"
 class="selected-option"
 >
 <span class="option-label">{{ option.label }}</span>
-<span 
-class="remove-option" 
+<span
+class="remove-option"
 @click.stop="removeOption(option)"
 >×</span>
 </div>
-<input 
+
+<!-- "More" badge -->
+<div
+v-if="hasMoreTags"
+class="selected-option more-badge"
+:title="hiddenTagsTooltip"
+>
+<span class="option-label">+{{ hiddenTagsCount }} more</span>
+</div>
+</template>
+
+<input
 v-if="!content.disabled"
 ref="searchInput"
-type="text" 
+type="text"
 class="search-input"
 v-model="searchQuery"
 @click.stop="openDropdown"
@@ -188,6 +206,47 @@ if (selectedOptions.value.length > 0) {
 return '';
 }
 return props.content?.placeholder || 'Select options...';
+});
+
+// Display mode computed properties
+const displayMode = computed(() => props.content?.displayMode || 'tags');
+const maxVisibleTags = computed(() => props.content?.maxVisibleTags || 3);
+const compactThreshold = computed(() => props.content?.compactThreshold || 10);
+
+const shouldShowCompact = computed(() => {
+const count = selectedOptions.value.length;
+if (displayMode.value === 'compact') return count > 0;
+if (displayMode.value === 'auto') return count >= compactThreshold.value;
+return false;
+});
+
+const visibleTags = computed(() => {
+if (shouldShowCompact.value) return [];
+const max = maxVisibleTags.value;
+return selectedOptions.value.slice(0, max);
+});
+
+const hasMoreTags = computed(() => {
+if (shouldShowCompact.value) return false;
+return selectedOptions.value.length > maxVisibleTags.value;
+});
+
+const hiddenTagsCount = computed(() => {
+if (shouldShowCompact.value) return 0;
+return Math.max(0, selectedOptions.value.length - maxVisibleTags.value);
+});
+
+const hiddenTagsTooltip = computed(() => {
+if (!hasMoreTags.value) return '';
+const hiddenTags = selectedOptions.value.slice(maxVisibleTags.value);
+return hiddenTags.map(tag => tag.label).join(', ');
+});
+
+const compactSummaryText = computed(() => {
+const count = selectedOptions.value.length;
+if (count === 0) return '';
+if (count === 1) return '1 option selected';
+return `${count} options selected`;
 });
 
 // Add these computed properties after the placeholderText computed property
@@ -635,6 +694,36 @@ cursor: pointer;
 
 &:hover {
 color: #dc3545;
+}
+}
+
+// Compact summary styling
+.compact-summary {
+display: flex;
+align-items: center;
+padding: 4px 0;
+margin: 2px 0;
+}
+
+.summary-text {
+color: var(--tag-text-color);
+font-weight: 500;
+white-space: nowrap;
+}
+
+// More badge styling
+.more-badge {
+background-color: var(--primary-color);
+color: white;
+cursor: default;
+font-weight: 500;
+
+.option-label {
+font-size: 0.95em;
+}
+
+&:hover {
+opacity: 0.9;
 }
 }
 

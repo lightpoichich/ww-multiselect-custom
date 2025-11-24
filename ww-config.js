@@ -183,6 +183,78 @@ showConfirmButton: {
     },
     /* wwEditor:end */
 },
+maxVisibleTags: {
+label: {
+en: 'Max Visible Tags',
+},
+type: 'Number',
+section: 'settings',
+bindable: true,
+defaultValue: 3,
+options: {
+min: 1,
+max: 20,
+step: 1,
+},
+/* wwEditor:start */
+bindingValidation: {
+type: 'number',
+tooltip: 'Number of tags to show before collapsing: `3`, `5`, etc.',
+},
+propertyHelp: {
+tooltip: 'Maximum number of selected tags to display before showing "+X more"',
+},
+/* wwEditor:end */
+},
+displayMode: {
+label: {
+en: 'Display Mode',
+},
+type: 'TextSelect',
+section: 'settings',
+bindable: true,
+defaultValue: 'tags',
+options: {
+options: [
+{ value: 'tags', label: 'Show Tags' },
+{ value: 'compact', label: 'Compact Summary' },
+{ value: 'auto', label: 'Auto (Smart)' },
+],
+},
+/* wwEditor:start */
+bindingValidation: {
+type: 'string',
+tooltip: 'Valid values: tags | compact | auto',
+},
+propertyHelp: {
+tooltip: 'How to display selected options: individual tags, compact summary, or auto-switch based on count',
+},
+/* wwEditor:end */
+},
+compactThreshold: {
+label: {
+en: 'Compact Threshold',
+},
+type: 'Number',
+section: 'settings',
+bindable: true,
+defaultValue: 10,
+options: {
+min: 2,
+max: 50,
+step: 1,
+},
+hidden: (content) => content?.displayMode !== 'auto',
+/* wwEditor:start */
+bindingValidation: {
+type: 'number',
+tooltip: 'Number of selections before switching to compact mode in auto display',
+},
+propertyHelp: {
+tooltip: 'In auto mode, switch to compact summary when selection count exceeds this number',
+},
+/* wwEditor:end */
+},
 disabled: {
 label: {
 en: 'Disabled',

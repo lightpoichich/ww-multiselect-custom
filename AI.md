@@ -25,6 +25,9 @@ A flexible multi-select dropdown component that allows users to select multiple 
 - `labelPropertyPath`: `string` - The property path to use for displaying option labels. Default: `'label'`
 - `valuePropertyPath`: `string` - The property path to use for option values. Default: `'value'`
 - `placeholder`: `string` - Text displayed when no options are selected. Default: `'Select options...'`
+- `maxVisibleTags`: `number` - Maximum number of selected tags to display before showing "+X more" badge. Default: `3`
+- `displayMode`: `string` - How to display selected options: 'tags' (show individual tags), 'compact' (show summary text), or 'auto' (automatically switch based on count). Default: `'tags'`
+- `compactThreshold`: `number` - In auto mode, switch to compact summary when selection count exceeds this number. Default: `10`
 - `disabled`: `boolean` - Disable the component to prevent user interaction. Default: `false`
 
 ***Styling Properties:***
@@ -61,3 +64,8 @@ A flexible multi-select dropdown component that allows users to select multiple 
 - When searching, the "Select All" button will only affect the filtered options currently visible
 - The component maintains proper synchronization between options and selected values when options change
 - Dynamic property mapping allows you to use this component with various data structures
+- **Display Modes**:
+  - **Tags mode**: Shows individual tags up to `maxVisibleTags`, then displays "+X more" badge with tooltip
+  - **Compact mode**: Always shows "X options selected" summary text
+  - **Auto mode**: Automatically switches to compact summary when selection exceeds `compactThreshold`
+- Hover over the "+X more" badge to see a tooltip with all hidden tag labels
